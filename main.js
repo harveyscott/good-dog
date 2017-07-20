@@ -1,4 +1,9 @@
-const {app, BrowserWindow, ipcMain} = require('electron')
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  net
+} = require('electron')
 const path = require('path')
 const url = require('url')
 
@@ -6,9 +11,12 @@ const url = require('url')
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
-function createWindow () {
+function createWindow() {
   // Create the browser window.
-  win = new BrowserWindow({width: 800, height: 600})
+  win = new BrowserWindow({
+    width: 800,
+    height: 600
+  })
 
   // and load the index.html of the app.
   win.loadURL(url.format({
@@ -57,17 +65,15 @@ ipcMain.on('doggo', (event, arg) => {
 });
 
 function getDog(image) {
-    var request = require("request");
-
-    var options = { method: 'GET',
-    url: 'http://dog.ceo/api/breeds/image/random',
-    headers: 
-    { 'postman-token': '30406531-15ae-7b0b-6754-470a3026fcef',
-     'cache-control': 'no-cache' } };
-
-    request(options, function (error, response, body) {
-    if (error) throw new Error(error);
-
-    console.log(body);
-});
+  const req = net.request('http://dog.ceo/api/breeds/image/random');
+  request.on('response', (response) => {
+    console.log(`STATUS: ${response.statusCode}`)
+    console.log(`HEADERS: ${JSON.stringify(response.headers)}`)
+    response.on('data', (chunk) => {
+      console.log(`BODY: ${chunk}`)
+    })
+    response.on('end', () => {
+      console.log('No more data in response.')
+    })
+  })
 }
