@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+    <!--Divider for the button-->
+    <div class="center">
+        <button class="btn" onclick="startRequest()">Show a good boy!</button>
+    </div>
+    <!--Divider for the picture-->
+    <div>
+        <img id="dogpic" src="nothing.png"></img>
+    </div>
+    <script>
+        function startRequest() {
+            console.log("This works");
+            var {ipcRenderer, remote} = require('electron');  
+            var main = remote.require("./main.js");
+            var image = document.getElementById("dogpic").getAttribute("src");
+            ipcRenderer.send('doggo', [image]);
+        }
+    </script>
+  </body>
+</html>
